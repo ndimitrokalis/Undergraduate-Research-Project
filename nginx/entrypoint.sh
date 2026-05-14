@@ -1,5 +1,4 @@
 #!/bin/sh
-set -e
 
 DOMAIN="streaming-platform.ddns.net"
 CERT_PATH="/etc/letsencrypt/live/$DOMAIN/fullchain.pem"
@@ -11,17 +10,21 @@ if [ ! -f "$CERT_PATH" ]; then
     echo "No SSL certificate found. Starting with HTTP-only config..."
     cp /etc/nginx/nginx-init.conf /etc/nginx/conf.d/default.conf
     nginx &
-
-    echo "Waiting for nginx to start..."
     sleep 2
 
     echo "Requesting SSL certificate from Let's Encrypt..."
-    certbot certonly --webroot -w /var/www/certbot \
+    if certbot certonly --webroot -w /var/www/certbot \
         -d "$DOMAIN" \
         --email "$CERTBOT_EMAIL" \
-        --agree-tos --no-eff-email --non-interactive
+        --agree-tos --no-eff-email --non-interactive; then
+        echo "Certificate obtained."
+    else
+        echo "Certbot failed. Running in HTTP-only mode."
+        echo "Run 'docker exec streaming-nginx certbot certonly --webroot -w /var/www/certbot -d $DOMAIN --email \$CERTBOT_EMAIL --agree-tos --no-eff-email --non-interactive' to retry manually."
+        wait
+        exit 0
+    fi
 
-    echo "Certificate obtained. Stopping temporary nginx..."
     nginx -s stop
     sleep 1
 fi
