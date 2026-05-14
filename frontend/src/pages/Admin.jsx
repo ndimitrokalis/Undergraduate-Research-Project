@@ -257,7 +257,6 @@ export default function Admin() {
                         value={mediaForm.genre}
                         onChange={(e) => setMediaForm({ ...mediaForm, genre: e.target.value })}
                         className={inputClass}
-                        required
                       />
                     </div>
                     <div>

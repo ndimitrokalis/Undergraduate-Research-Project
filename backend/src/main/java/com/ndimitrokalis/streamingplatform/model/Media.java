@@ -23,7 +23,6 @@ public class Media {
     @Column(length = 1000)
     private String description;
 
-    @Column(nullable = false)
     private String genre;
 
     @Column(nullable = false)
