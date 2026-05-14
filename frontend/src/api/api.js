@@ -148,3 +148,40 @@ export function getActiveSessions() {
 export function endSession(roomId) {
   return request('/sessions/' + roomId, { method: 'DELETE' });
 }
+
+export function getAdminUsers() {
+  return request('/admin/users');
+}
+
+export function deleteAdminUser(id) {
+  return request('/admin/users/' + id, { method: 'DELETE' });
+}
+
+export function updateAdminUserRole(id, admin) {
+  return request('/admin/users/' + id + '/role', {
+    method: 'PUT',
+    body: JSON.stringify({ admin }),
+  });
+}
+
+export function getAdminMedia() {
+  return request('/admin/media');
+}
+
+export function createAdminMedia(data) {
+  return request('/admin/media', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export function updateAdminMedia(id, data) {
+  return request('/admin/media/' + id, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+}
+
+export function deleteAdminMedia(id) {
+  return request('/admin/media/' + id, { method: 'DELETE' });
+}

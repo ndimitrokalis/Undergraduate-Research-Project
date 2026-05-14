@@ -12,6 +12,7 @@ import Session from './pages/Session';
 import Sessions from './pages/Sessions';
 import Profile from './pages/Profile';
 import Favorites from './pages/Favorites';
+import Admin from './pages/Admin';
 
 function PrivateRoute({ children }) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
@@ -21,6 +22,14 @@ function PrivateRoute({ children }) {
 function GuestRoute({ children }) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   return isAuthenticated ? <Navigate to="/" replace /> : children;
+}
+
+function AdminRoute({ children }) {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const isAdmin = useAuthStore((s) => s.isAdmin);
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (!isAdmin) return <Navigate to="/" replace />;
+  return children;
 }
 
 export default function App() {
@@ -39,6 +48,7 @@ export default function App() {
       <Route path="/sessions" element={<PrivateRoute><Sessions /></PrivateRoute>} />
       <Route path="/favorites" element={<PrivateRoute><Favorites /></PrivateRoute>} />
       <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+      <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

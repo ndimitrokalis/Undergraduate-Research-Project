@@ -7,6 +7,7 @@ export default function Navbar({ onSearchResults }) {
   const [query, setQuery] = useState('');
   const [searching, setSearching] = useState(false);
   const logout = useAuthStore((s) => s.logout);
+  const isAdmin = useAuthStore((s) => s.isAdmin);
   const navigate = useNavigate();
 
   async function handleSearch(e) {
@@ -65,6 +66,9 @@ export default function Navbar({ onSearchResults }) {
               {searching ? '...' : 'Search'}
             </button>
           </form>
+        )}
+        {isAdmin && (
+          <Link to="/admin" className="text-[#e5e5e5] hover:text-white text-sm no-underline">Admin</Link>
         )}
         <Link to="/profile" className="text-[#e5e5e5] hover:text-white text-sm no-underline">Profile</Link>
         <button

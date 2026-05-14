@@ -175,13 +175,19 @@ export default function Session() {
 
   function handlePlay() {
     if (ignoreNextEvent.current) return;
-    if (!isHost) return;
+    if (!isHost) {
+      setPlaying(false);
+      return;
+    }
     sendMessage('play', getCurrentTime());
   }
 
   function handlePause() {
     if (ignoreNextEvent.current) return;
-    if (!isHost) return;
+    if (!isHost) {
+      setPlaying(true);
+      return;
+    }
     sendMessage('pause', getCurrentTime());
   }
 
@@ -238,7 +244,7 @@ export default function Session() {
             width="100%"
             height="100%"
             playing={playing}
-            controls={isHost}
+            controls
             onPlay={handlePlay}
             onPause={handlePause}
             onSeek={handleSeek}
