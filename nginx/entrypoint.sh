@@ -4,10 +4,16 @@ set -e
 DOMAIN="streaming-platform.ddns.net"
 CERT_PATH="/etc/letsencrypt/live/$DOMAIN/fullchain.pem"
 
+# Remove all configs to start clean — nginx loads every .conf in conf.d/
+rm -f /etc/nginx/conf.d/*.conf
+
 if [ ! -f "$CERT_PATH" ]; then
     echo "No SSL certificate found. Starting with HTTP-only config..."
-    cp /etc/nginx/conf.d/nginx-init.conf /etc/nginx/conf.d/default.conf
+    cp /etc/nginx/nginx-init.conf /etc/nginx/conf.d/default.conf
     nginx &
+
+    echo "Waiting for nginx to start..."
+    sleep 2
 
     echo "Requesting SSL certificate from Let's Encrypt..."
     certbot certonly --webroot -w /var/www/certbot \
@@ -15,15 +21,14 @@ if [ ! -f "$CERT_PATH" ]; then
         --email "$CERTBOT_EMAIL" \
         --agree-tos --no-eff-email --non-interactive
 
-    echo "Certificate obtained. Switching to full SSL config..."
-    cp /etc/nginx/conf.d/nginx-ssl.conf /etc/nginx/conf.d/default.conf
-    nginx -s reload
-    echo "SSL enabled successfully."
-
-    kill $(cat /var/run/nginx.pid)
+    echo "Certificate obtained. Stopping temporary nginx..."
+    nginx -s stop
+    sleep 1
 fi
 
-cp /etc/nginx/conf.d/nginx-ssl.conf /etc/nginx/conf.d/default.conf
+echo "Starting with full SSL config..."
+rm -f /etc/nginx/conf.d/*.conf
+cp /etc/nginx/nginx-ssl.conf /etc/nginx/conf.d/default.conf
 
 echo "Starting cron for certificate renewal..."
 echo "0 12 * * * certbot renew --quiet && nginx -s reload" | crontab -

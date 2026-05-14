@@ -9,8 +9,8 @@ FROM nginx:alpine
 RUN apk add --no-cache certbot openssl dcron
 
 COPY --from=build /app/dist /usr/share/nginx/html
-COPY nginx/nginx.conf /etc/nginx/conf.d/nginx-ssl.conf
-COPY nginx/nginx-init.conf /etc/nginx/conf.d/nginx-init.conf
+COPY nginx/nginx.conf /etc/nginx/nginx-ssl.conf
+COPY nginx/nginx-init.conf /etc/nginx/nginx-init.conf
 COPY nginx/entrypoint.sh /entrypoint.sh
 
 RUN rm -f /etc/nginx/conf.d/default.conf && \
