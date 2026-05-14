@@ -70,8 +70,8 @@ Pushes to `main` trigger CI/CD: tests run, then auto-deploy to EC2 via SSH.
 
 ## Demo Accounts
 
-| Email | Password | Role |
-|-------|----------|------|
-| alice@example.com | Testing1! | User |
-| bob@example.com | Testing1! | User |
-| admin@example.com | Testing1! | Admin |
+| Email | Phone | Password | Role |
+|-------|-------|----------|------|
+| alice@example.com | +30 6911111111 | Testing1! | User |
+| bob@example.com | +44 7911222333 | Testing1! | User |
+| admin@example.com | +1 5551234567 | Testing1! | Admin |
