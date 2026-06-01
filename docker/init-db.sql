@@ -1,0 +1,1 @@
+CREATE DATABASE streaming_platform_test;

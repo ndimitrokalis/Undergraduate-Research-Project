@@ -14,4 +14,8 @@ public interface RoomGuestRepository extends JpaRepository<RoomGuest, Long> {
     List<RoomGuest> findByUserIdAndSessionActiveTrue(Long userId);
 
     void deleteBySessionIdAndUserId(Long sessionId, Long userId);
+
+    void deleteByUserId(Long userId);
+
+    void deleteBySessionId(Long sessionId);
 }

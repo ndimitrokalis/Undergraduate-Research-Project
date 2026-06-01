@@ -3,14 +3,15 @@ package com.ndimitrokalis.streamingplatform.controller;
 import com.ndimitrokalis.streamingplatform.dto.MediaResponse;
 import com.ndimitrokalis.streamingplatform.model.Media;
 import com.ndimitrokalis.streamingplatform.model.User;
-import com.ndimitrokalis.streamingplatform.repository.MediaRepository;
-import com.ndimitrokalis.streamingplatform.repository.UserRepository;
+import com.ndimitrokalis.streamingplatform.model.WatchSession;
+import com.ndimitrokalis.streamingplatform.repository.*;
 import com.ndimitrokalis.streamingplatform.service.MediaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +27,12 @@ public class AdminController {
     private final UserRepository userRepository;
     private final MediaRepository mediaRepository;
     private final MediaService mediaService;
+    private final EmailVerificationTokenRepository emailVerificationTokenRepository;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
+    private final FavoriteRepository favoriteRepository;
+    private final WatchHistoryRepository watchHistoryRepository;
+    private final RoomGuestRepository roomGuestRepository;
+    private final WatchSessionRepository watchSessionRepository;
 
     @GetMapping("/users")
     public ResponseEntity<List<Map<String, Object>>> getAllUsers() {
@@ -43,6 +50,7 @@ public class AdminController {
     }
 
     @DeleteMapping("/users/{id}")
+    @Transactional
     public ResponseEntity<Map<String, String>> deleteUser(@PathVariable Long id, Authentication auth) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -50,6 +58,16 @@ public class AdminController {
             throw new RuntimeException("Cannot delete an admin user");
         }
         log.info("Admin {} deleted user: {} (id={})", auth.getName(), user.getEmail(), id);
+
+        emailVerificationTokenRepository.deleteByUserId(id);
+        passwordResetTokenRepository.deleteByUserId(id);
+        favoriteRepository.deleteByUserId(id);
+        watchHistoryRepository.deleteByUserId(id);
+        roomGuestRepository.deleteByUserId(id);
+        for (WatchSession session : watchSessionRepository.findByHostId(id)) {
+            roomGuestRepository.deleteBySessionId(session.getId());
+        }
+        watchSessionRepository.deleteAll(watchSessionRepository.findByHostId(id));
         userRepository.delete(user);
         return ResponseEntity.ok(Map.of("message", "User deleted"));
     }

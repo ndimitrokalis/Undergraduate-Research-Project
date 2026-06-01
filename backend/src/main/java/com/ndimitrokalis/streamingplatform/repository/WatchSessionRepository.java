@@ -13,4 +13,6 @@ public interface WatchSessionRepository extends JpaRepository<WatchSession, Long
     List<WatchSession> findByHostIdAndActiveTrue(Long hostId);
 
     List<WatchSession> findByActiveTrue();
+
+    List<WatchSession> findByHostId(Long hostId);
 }
