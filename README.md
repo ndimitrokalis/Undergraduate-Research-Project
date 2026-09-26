@@ -66,7 +66,7 @@ cp .env.example .env
 docker compose -f docker-compose.prod.yml up -d
 ```
 
-Pushes to `main` trigger CI/CD: tests run, then auto-deploy to EC2 via SSH.
+Pushes to `main` trigger CI/CD: tests run, then auto-deploy to OCI Compute via SSH.
 
 ## Demo Accounts
 
