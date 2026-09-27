@@ -380,7 +380,7 @@ UPDATE media SET video_url = REPLACE(video_url, '/videos/', '/series/') WHERE ty
 
 UPDATE media SET thumbnail_url = REPLACE(REPLACE(video_url, '.mp4', '.jpg'), '.mkv', '.jpg') WHERE thumbnail_url IS NULL;
 
--- Admin account only (password: Password1!)
+-- Admin account
 INSERT INTO users (email, password, display_name, full_name, phone, country, enabled, admin, subscription_type, created_at)
 SELECT 'admin@example.com', '$2b$12$VwqWDzLp3Q29Ot9tiHnE7OoJ6ammqD2blykgR2GwhFGCQ4PSfX/.2', 'Admin', 'Admin User', '+1 5551234567', 'US', true, true, 'FREE', NOW()
 WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = 'admin@example.com');

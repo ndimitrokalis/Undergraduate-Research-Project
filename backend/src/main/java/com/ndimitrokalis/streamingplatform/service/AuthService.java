@@ -107,6 +107,9 @@ public class AuthService {
             throw new RuntimeException("Email is already verified");
         }
 
+        tokenRepository.deleteByUserId(user.getId());
+        tokenRepository.flush();
+
         String token = UUID.randomUUID().toString();
         EmailVerificationToken verificationToken = EmailVerificationToken.builder()
                 .token(token)
