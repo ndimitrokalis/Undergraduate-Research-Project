@@ -120,8 +120,8 @@ public class AdminController {
         if (body.containsKey("type")) media.setType((String) body.get("type"));
         if (body.containsKey("thumbnailUrl")) media.setThumbnailUrl((String) body.get("thumbnailUrl"));
         if (body.containsKey("videoUrl")) media.setVideoUrl((String) body.get("videoUrl"));
-        if (body.containsKey("durationSeconds")) media.setDurationSeconds(((Number) body.get("durationSeconds")).intValue());
-        if (body.containsKey("releaseYear")) media.setReleaseYear(((Number) body.get("releaseYear")).intValue());
+        if (body.containsKey("durationSeconds")) media.setDurationSeconds(body.get("durationSeconds") != null ? ((Number) body.get("durationSeconds")).intValue() : null);
+        if (body.containsKey("releaseYear")) media.setReleaseYear(body.get("releaseYear") != null ? ((Number) body.get("releaseYear")).intValue() : null);
 
         mediaRepository.save(media);
         return ResponseEntity.ok(mediaService.getMediaById(media.getId()));
